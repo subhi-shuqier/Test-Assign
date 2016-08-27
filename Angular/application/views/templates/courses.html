@@ -1,0 +1,159 @@
+<div class="row">
+    <div class="col-lg-12 margin-tb">
+        <div class="pull-left">
+            <h1>Course Management</h1>
+        </div>
+        <div class="pull-right" style="padding-top:30px">
+            <div class="box-tools" style="display:inline-table">
+              <div class="input-group">
+                  <input type="text" class="form-control input-sm ng-valid ng-dirty" placeholder="Search" ng-change="filterCourses()" ng-model="searchText" name="table_search" title="" tooltip="" data-original-title="Min character length is 3">
+                  <span class="input-group-addon">Search</span>
+              </div>
+            </div>
+            <button class="btn btn-success" data-toggle="modal" data-target="#create-user">Create New</button>
+        </div>
+    </div>
+</div>
+
+<table id='table1' class="table table-bordered pagin-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Course Name</th>
+            <th width="220px">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="value in data">
+            <td>{{ value.id }}</td>
+            <td>{{ value.course_name }}</td>
+            <td>
+            <button data-toggle="modal" ng-click="edit(value.id)" data-target="#edit-data" class="btn btn-primary">Edit</button>
+            <button ng-click="remove(value,$index)" class="btn btn-danger">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<!-- Create Modal -->
+<div class="modal fade" id="create-user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div style = "width:850px;" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" name="addCourse" role="form" ng-submit="saveAddCourse()">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Create Course</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <strong>Course Name : </strong>
+                            <div class="form-group">
+                                <input ng-model="form.course_name" type="text" placeholder="Name" name="title" class="form-control" required />
+								<input ng-model="form.Users" type="text" placeholder="Name" name="title" class="form-control" style="display:none;"  />
+                            </div>
+                        </div>
+						 
+						 <span>From</span>
+							<div class="box-tools" style="display:inline-table">
+							  <div class="input-group">
+								  <input type="number" class="form-control input-sm ng-valid ng-dirty" placeholder="Age" ng-change="filterOnUserAge()" ng-model="user_min_age" name="users_min_age" title="" tooltip="">
+							  </div>
+							</div>
+							<span>to</span>
+							<div class="box-tools" style="display:inline-table">
+							  <div class="input-group">
+								  <input type="number" class="form-control input-sm ng-valid ng-dirty" placeholder="Age" ng-change="filterOnUserAge()" ng-model="users_max_age" name="users_max_age" title="" tooltip="">
+							  </div>
+							</div>
+                    </div>
+					<div class="row">
+						<table id='table2' class="table table-bordered pagin-table">
+							<thead>
+								<tr>
+									<th>User Name</th>
+									<th>User E-mail</th>
+									<th>User Age</th>
+									<th width="220px">Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr dir-paginate="user_data in users_data | itemsPerPage:5" total-items="totalItems">
+									<td>{{ user_data.name }}</td>
+									<td>{{ user_data.email }}</td>
+									<td>{{ user_data.age }}</td>
+									<td>
+									<button type="button" ng-click="editUser(user_data.user_id)" data-target="#edit-user" class="btn btn-primary">Edit</button>
+									<button type="button" ng-click="removeUser(user_data.user_id,$index)" class="btn btn-danger">Delete</button>
+									<button type="button" id="user_row_{{ user_data.user_id }}" ng-click="add_Remove_User(user_data.user_id,$index)" class="btn btn-success">Attach User</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<dir-pagination-controls class="pull-right" on-page-change="user_pageChanged_create(newPageNumber)" template-url="templates/dirPagination.html" ></dir-pagination-controls>
+					</div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" ng-disabled="addCourse.$invalid" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="edit-data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div style = "width:850px;" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" name="editCourse" role="form" ng-submit="saveEdit()">
+                <input ng-model="form.id" type="hidden" placeholder="Name" name="name" class="form-control" />
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit Course</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group">
+                               <input ng-model="form.course_name" type="text" placeholder="Course Name" name="title" class="form-control" required />
+                            </div>
+                        </div>
+                    </div>
+					<div class="row">
+						<table id='table3' class="table table-bordered pagin-table">
+							<thead>
+								<tr>
+									<th>User Name</th>
+									<th>User E-mail</th>
+									<th>User Age</th>
+									<th width="220px">Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr dir-paginate="value_2 in users_data_Edit | itemsPerPage:5" total-items="totalItems" pagination-id="paginate1">
+									<td>{{ value_2.name }}</td>
+									<td>{{ value_2.email }}</td>
+									<td>{{ value_2.age }}</td>
+									<td>
+									<button type="button" ng-click="editUser(value_2.user_id)" data-target="#edit-data" class="btn btn-primary">Edit</button>
+									<button type="button" ng-click="removeUser(value_2.user_id,$index)" class="btn btn-danger">Delete</button>
+									<button type="button" id="user_row_{{ value_2.user_id }}" ng-click="add_Remove_User(value_2.user_id,$index)" class="btn btn-{{value_2.y == '0' ? 'success' : 'warning'}}">{{value_2.y == '0' ? 'Attach User' : 'Deattach User'}}</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<dir-pagination-controls pagination-id="paginate1" class="pull-right" on-page-change="user_pageChanged_create(newPageNumber)" template-url="templates/dirPagination.html" ></dir-pagination-controls>
+					</div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" ng-disabled="editCourse.$invalid" class="btn btn-primary create-crud">Submit</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
